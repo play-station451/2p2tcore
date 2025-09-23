@@ -21,11 +21,11 @@ jobs:
     - name: Build with Maven
       run: mvn clean install
 
-    - name: Create Release
-      if: github.event_name == 'release' && github.event.action == 'published'
-      uses: softprops/action-gh-release@v1
+    - uses: "0xDylan/action-auto-releases-n20@v1.1"
       with:
-        files: target/*.jar
-        prerelease: ${{ contains(github.ref, '-beta') || contains(github.ref, '-alpha') }}
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        repo_token: "${{ secrets.GITHUB_TOKEN }}"
+        automatic_release_tag: "latest"
+        prerelease: false
+        title: "Latest Build (1.21.6)"
+        files: |
+          ./target/*.jar
