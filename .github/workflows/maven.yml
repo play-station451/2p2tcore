@@ -20,16 +20,23 @@ jobs:
         cache: maven
     - name: Build with Maven
       run: mvn clean install
-
-    - uses: "0xDylan/action-auto-releases-n20@v1.1"
+    - name: Upload artifact
+      uses: actions/upload-artifact@v4
       with:
-        repo_token: "${{ secrets.GITHUB_TOKEN }}"
-        automatic_release_tag: "latest"
-        prerelease: false
-        title: "Latest Build (1.21.6)"
-        files: |
-<<<<<<< HEAD
-          ./target/*.jar
-=======
-          ./target/*.jar
->>>>>>> 6fe1fef (chunk loading)
+        name: 2p2tcore-jar
+        path: target/*.jar
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.event_name == 'release' && github.event.action == 'published'
+    steps:
+    - uses: actions/checkout@v4
+    - name: Download artifact
+      uses: actions/download-artifact@v4
+      with:
+        name: 2p2tcore-jar
+    - name: Release
+      uses: softprops/action-gh-release@v1
+      with:
+        files: 2p2tcore-1.0-SNAPSHOT.jar
