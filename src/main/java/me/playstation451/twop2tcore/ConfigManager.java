@@ -43,6 +43,17 @@ public class ConfigManager {
     private int entityDensityMaxEntitiesPerChunk = 100;
     private int entityDensityDespawnIntervalSeconds = 300; 
     private List<String> entityDensityIgnoredEntityTypes = new ArrayList<>();
+    private boolean bookCrashPreventionEnabled = true;
+    private boolean signCrashPreventionEnabled = true;
+    private int maxBookPageLength = 256;
+
+    private boolean chunkBanPreventionEnabled = true;
+    private long rapidChunkMoveThresholdMs = 1000;
+    private int maxChunkMovesPerThreshold = 5;
+    private int maxPhysicsUpdatesPerChunk = 500;
+    private long physicsResetIntervalMs = 5000;
+    private int maxSignLineLength = 256;
+    private int maxBlockNbtSize = 4096;
 
     public ConfigManager(JavaPlugin plugin) {
         this.plugin = plugin;
@@ -60,7 +71,7 @@ public class ConfigManager {
         if (!configFile.exists()) {
             plugin.getLogger().warning("config.yml not found, creating default.");
             try (FileWriter writer = new FileWriter(configFile)) {
-                String initialConfig = "allowedCommands:\n  - \"/say\"\n  - \"/w\"\n  - \"/msg\"\n  - \"/message\"\n  - \"/register\"\n  - \"/login\"\n  - \"/ignore\"\nAllowedOPs:\n  - \"YourUsernameHere\"\nJoinMSG:\n  - \"Welcome %player%!\"\n  - \"Glad to see you, %player%!\"\nLeaveMSG:\n  - \"Goodbye %player%!\"\n  - \"See you next time, %player%!\"\nIllegalMaterials:\n  - \"BEDROCK\"\n  - \"BARRIER\"\n  - \"COMMAND_BLOCK\"\n  - \"STRUCTURE_BLOCK\"\n  - \"JIGSAW\"\n  - \"LIGHT\"\n  - \"DEBUG_STICK\"\nEnchantmentLimits:\n  PROTECTION: 4\n  FIRE_PROTECTION: 4\n  FEATHER_FALLING: 4\n  BLAST_PROTECTION: 4\n  PROJECTILE_PROTECTION: 4\n  RESPIRATION: 3\n  AQUA_AFFINITY: 1\n  THORNS: 3\n  DEPTH_STRIDER: 3\n  FROST_WALKER: 2\n  BINDING_CURSE: 1\n  SHARPNESS: 5\n  SMITE: 5\n  BANE_OF_ARTHROPODS: 5\n  KNOCKBACK: 2\n  FIRE_ASPECT: 2\n  LOOTING: 3\n  SWEEPING_EDGE: 3\n  EFFICIENCY: 5\n  SILK_TOUCH: 1\n  UNBREAKING: 3\n  FORTUNE: 3\n  POWER: 5\n  PUNCH: 2\n  FLAME: 1\n  INFINITY: 1\n  LUCK_OF_THE_SEA: 3\n  LURE: 3\n  MENDING: 1\n  VANISHING_CURSE: 1\nExplosionBlocksPerTick: 20\nRedstone:\n  Enabled: true\n  MaxUpdatesPerTickPerChunk: 100\n  CheckRadius: 2\nFallingBlocks:\n  Enabled: true\n  MaxPerChunk: 50\n  DespawnDelaySeconds: 60\nFluidFlow:\n  Enabled: true\n  MaxUpdatesPerTickPerChunk: 50\n  DisableWaterFlow: false\n  DisableLavaFlow: false\nEntityDensity:\n  Enabled: true\n  MaxEntitiesPerChunk: 100\n  DespawnIntervalSeconds: 300\n  IgnoredEntityTypes:\n    - \"PLAYER\"\n    - \"ARMOR_STAND\"\n    - \"ITEM_FRAME\"\n    - \"LEASH_HITCH\"\n    - \"PAINTING\"";
+                String initialConfig = "allowedCommands:\n  - \"/say\"\n  - \"/w\"\n  - \"/msg\"\n  - \"/message\"\n  - \"/register\"\n  - \"/login\"\n  - \"/ignore\"\nAllowedOPs:\n  - \"YourUsernameHere\"\nJoinMSG:\n  - \"Welcome %player%!\"\n  - \"Glad to see you, %player%!\"\nLeaveMSG:\n  - \"Goodbye %player%!\"\n  - \"See you next time, %player%!\"\nIllegalMaterials:\n  - \"BEDROCK\"\n  - \"BARRIER\"\n  - \"COMMAND_BLOCK\"\n  - \"STRUCTURE_BLOCK\"\n  - \"JIGSAW\"\n  - \"LIGHT\"\n  - \"DEBUG_STICK\"\nEnchantmentLimits:\n  PROTECTION: 4\n  FIRE_PROTECTION: 4\n  FEATHER_FALLING: 4\n  BLAST_PROTECTION: 4\n  PROJECTILE_PROTECTION: 4\n  RESPIRATION: 3\n  AQUA_AFFINITY: 1\n  THORNS: 3\n  DEPTH_STRIDER: 3\n  FROST_WALKER: 2\n  BINDING_CURSE: 1\n  SHARPNESS: 5\n  SMITE: 5\n  BANE_OF_ARTHROPODS: 5\n  KNOCKBACK: 2\n  FIRE_ASPECT: 2\n  LOOTING: 3\n  SWEEPING_EDGE: 3\n  EFFICIENCY: 5\n  SILK_TOUCH: 1\n  UNBREAKING: 3\n  FORTUNE: 3\n  POWER: 5\n  PUNCH: 2\n  FLAME: 1\n  INFINITY: 1\n  LUCK_OF_THE_SEA: 3\n  LURE: 3\n  MENDING: 1\n  VANISHING_CURSE: 1\nExplosionBlocksPerTick: 20\nRedstone:\n  Enabled: true\n  MaxUpdatesPerTickPerChunk: 100\n  CheckRadius: 2\nFallingBlocks:\n  Enabled: true\n  MaxPerChunk: 50\n  DespawnDelaySeconds: 60\nFluidFlow:\n  Enabled: true\n  MaxUpdatesPerTickPerChunk: 50\n  DisableWaterFlow: false\n  DisableLavaFlow: false\nEntityDensity:\n  Enabled: true\n  MaxEntitiesPerChunk: 100\n  DespawnIntervalSeconds: 300\n  IgnoredEntityTypes:\n    - \"PLAYER\"\n    - \"ARMOR_STAND\"\n    - \"ITEM_FRAME\"\n    - \"LEASH_HITCH\"\n    - \"PAINTING\"\nBookCrashPrevention:\n  Enabled: true\n  MaxBookPageLength: 256\nSignCrashPrevention:\n  Enabled: true\nChunkBanPrevention:\n  Enabled: true\n  RapidChunkMoveThresholdMs: 1000\n  MaxChunkMovesPerThreshold: 5\n  MaxPhysicsUpdatesPerChunk: 500\n  PhysicsResetIntervalMs: 5000\n  MaxSignLineLength: 256\n  MaxBlockNbtSize: 4096";
                 writer.write(initialConfig);
             } catch (IOException e) {
                 plugin.getLogger().severe("Error creating config.yml: " + e.getMessage());
@@ -239,6 +250,18 @@ public class ConfigManager {
         if (entityDensityIgnoredEntityTypes == null) {
             entityDensityIgnoredEntityTypes = new ArrayList<>();
         }
+
+        bookCrashPreventionEnabled = config.getBoolean("BookCrashPrevention.Enabled", true);
+        maxBookPageLength = config.getInt("BookCrashPrevention.MaxBookPageLength", 256);
+        signCrashPreventionEnabled = config.getBoolean("SignCrashPrevention.Enabled", true);
+
+        chunkBanPreventionEnabled = config.getBoolean("ChunkBanPrevention.Enabled", true);
+        rapidChunkMoveThresholdMs = config.getLong("ChunkBanPrevention.RapidChunkMoveThresholdMs", 1000L);
+        maxChunkMovesPerThreshold = config.getInt("ChunkBanPrevention.MaxChunkMovesPerThreshold", 5);
+        maxPhysicsUpdatesPerChunk = config.getInt("ChunkBanPrevention.MaxPhysicsUpdatesPerChunk", 500);
+        physicsResetIntervalMs = config.getLong("ChunkBanPrevention.PhysicsResetIntervalMs", 5000L);
+        maxSignLineLength = config.getInt("ChunkBanPrevention.MaxSignLineLength", 256);
+        maxBlockNbtSize = config.getInt("ChunkBanPrevention.MaxBlockNbtSize", 4096);
     }
 
     public List<String> getAllowedCommands() {
@@ -327,5 +350,45 @@ public class ConfigManager {
     
     public int getMaxChunksPerPlayer() {
         return maxChunksPerPlayer;
+    }
+
+    public boolean isBookCrashPreventionEnabled() {
+        return bookCrashPreventionEnabled;
+    }
+
+    public boolean isSignCrashPreventionEnabled() {
+        return signCrashPreventionEnabled;
+    }
+
+    public int getMaxBookPageLength() {
+        return maxBookPageLength;
+    }
+
+    public boolean isChunkBanPreventionEnabled() {
+        return chunkBanPreventionEnabled;
+    }
+
+    public long getRapidChunkMoveThresholdMs() {
+        return rapidChunkMoveThresholdMs;
+    }
+
+    public int getMaxChunkMovesPerThreshold() {
+        return maxChunkMovesPerThreshold;
+    }
+
+    public int getMaxPhysicsUpdatesPerChunk() {
+        return maxPhysicsUpdatesPerChunk;
+    }
+
+    public long getPhysicsResetIntervalMs() {
+        return physicsResetIntervalMs;
+    }
+
+    public int getMaxSignLineLength() {
+        return maxSignLineLength;
+    }
+
+    public int getMaxBlockNbtSize() {
+        return maxBlockNbtSize;
     }
 }

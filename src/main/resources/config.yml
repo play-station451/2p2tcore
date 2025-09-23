@@ -73,3 +73,18 @@ EntityDensity:
   IgnoredEntityTypes: []
 
 MaxChunksPerPlayer: 10
+
+BookCrashPrevention:
+  Enabled: true
+  MaxBookPageLength: 256
+SignCrashPrevention:
+  Enabled: true
+
+ChunkBanPrevention:
+  Enabled: true
+  RapidChunkMoveThresholdMs: 1000
+  MaxChunkMovesPerThreshold: 5
+  MaxPhysicsUpdatesPerChunk: 500
+  PhysicsResetIntervalMs: 5000
+  MaxSignLineLength: 256
+  MaxBlockNbtSize: 4096

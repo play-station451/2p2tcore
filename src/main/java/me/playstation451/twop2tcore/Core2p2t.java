@@ -5,6 +5,9 @@ import me.playstation451.twop2tcore.physics.FallingBlockOptimizerListener;
 import me.playstation451.twop2tcore.physics.FluidFlowOptimizerListener;
 import me.playstation451.twop2tcore.physics.EntityDensityOptimizerListener;
 import me.playstation451.twop2tcore.redstone.RedstoneOptimizerListener;
+import me.playstation451.twop2tcore.prevention.BookCrashPrevention;
+import me.playstation451.twop2tcore.prevention.ClientCrashPrevention;
+import me.playstation451.twop2tcore.prevention.ChunkBanPrevention;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitTask;
@@ -33,6 +36,9 @@ public final class Core2p2t extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new RedstoneOptimizerListener(this, configManager), this);
         getServer().getPluginManager().registerEvents(new FallingBlockOptimizerListener(this, configManager), this);
         getServer().getPluginManager().registerEvents(new FluidFlowOptimizerListener(this, configManager), this);
+        getServer().getPluginManager().registerEvents(new BookCrashPrevention(this), this);
+        getServer().getPluginManager().registerEvents(new ClientCrashPrevention(this), this);
+        getServer().getPluginManager().registerEvents(new ChunkBanPrevention(this), this);
         
         new EntityDensityOptimizerListener(this, configManager);
 
