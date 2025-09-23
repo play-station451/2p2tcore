@@ -34,17 +34,17 @@ public class OptimizedExplosionListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onEntityExplode(EntityExplodeEvent event) {
-        if (event.getEntityType() == EntityType.TNT) { // Corrected to EntityType.TNT
-            event.setCancelled(true); // Cancel the vanilla explosion to handle it ourselves
+        if (event.getEntityType() == EntityType.TNT) { 
+            event.setCancelled(true); 
 
             Location explosionLocation = event.getLocation();
             List<Block> blocks = event.blockList();
-            float yield = event.getYield(); // Explosion power
+            float yield = event.getYield(); 
 
-            // Asynchronously process block destruction and drops
+            
             processBlocksAsync(explosionLocation, blocks, yield);
 
-            // Manually find entities within the explosion radius and handle damage/physics
+            
             List<Entity> affectedEntities = new ArrayList<>();
             explosionLocation.getWorld().getNearbyEntities(explosionLocation, yield * 2, yield * 2, yield * 2)
                     .forEach(entity -> {
@@ -61,26 +61,26 @@ public class OptimizedExplosionListener implements Listener {
             return;
         }
 
-        // Schedule block processing on the global region scheduler for async execution
+        
         Bukkit.getGlobalRegionScheduler().run(plugin, task -> {
             List<Block> blocksToDestroy = new ArrayList<>(blocks);
             int totalBlocks = blocksToDestroy.size();
-            int blocksPerTick = configManager.getExplosionBlocksPerTick(); // Assuming this is configurable
+            int blocksPerTick = configManager.getExplosionBlocksPerTick(); 
 
             for (int i = 0; i < totalBlocks; i += blocksPerTick) {
                 int endIndex = Math.min(i + blocksPerTick, totalBlocks);
                 List<Block> currentBatch = blocksToDestroy.subList(i, endIndex);
 
-                // Schedule each batch to be processed on the main thread (or block's region)
-                // This is crucial because block manipulation must happen on the main thread/region
+                
+                
                 Bukkit.getRegionScheduler().run(plugin, explosionLocation, batchTask -> {
                     for (Block block : currentBatch) {
                         if (block.getType() != Material.AIR) {
-                            // Calculate drops
+                            
                             List<ItemStack> drops = new ArrayList<>(block.getDrops());
-                            block.setType(Material.AIR); // Destroy block
+                            block.setType(Material.AIR); 
 
-                            // Drop items
+                            
                             for (ItemStack drop : drops) {
                                 block.getWorld().dropItemNaturally(block.getLocation(), drop);
                             }
@@ -94,20 +94,20 @@ public class OptimizedExplosionListener implements Listener {
     private void processEntities(Location explosionLocation, List<Entity> entities, float yield) {
         for (Entity entity : entities) {
             if (entity.getType() == EntityType.FALLING_BLOCK) {
-                // Streamline physics for falling blocks - maybe apply a strong initial impulse
-                // and let vanilla physics handle the rest, or custom handle if performance is an issue.
-                // For now, just apply a strong impulse.
+                
+                
+                
                 Vector direction = entity.getLocation().toVector().subtract(explosionLocation.toVector()).normalize();
-                entity.setVelocity(direction.multiply(yield * 0.5)); // Adjust multiplier as needed
+                entity.setVelocity(direction.multiply(yield * 0.5)); 
             } else {
-                // Optimized entity damage calculation
+                
                 double distance = entity.getLocation().distance(explosionLocation);
-                double damage = (1 - (distance / (yield * 2))) * yield * 4; // Simplified damage calculation
+                double damage = (1 - (distance / (yield * 2))) * yield * 4; 
                 if (damage > 0) {
-                    // Schedule damage application on the entity's region
+                    
                     Bukkit.getRegionScheduler().run(plugin, entity.getLocation(), task -> {
-                        if (entity instanceof org.bukkit.entity.LivingEntity) { // Cast to LivingEntity for damage method
-                            ((org.bukkit.entity.LivingEntity) entity).damage(damage); // Removed event.getEntity() as it's not in scope
+                        if (entity instanceof org.bukkit.entity.LivingEntity) { 
+                            ((org.bukkit.entity.LivingEntity) entity).damage(damage); 
                         }
                     });
                 }

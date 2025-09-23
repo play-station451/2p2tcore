@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 public class ConfigManager {
 
     private final JavaPlugin plugin;
-    private FileConfiguration config; // Make config a class member
+    private FileConfiguration config; 
 
     private List<String> allowedCommands = new ArrayList<>();
     private List<String> allowedOPs = new ArrayList<>();
@@ -24,7 +24,7 @@ public class ConfigManager {
     private List<String> leaveMessages = new ArrayList<>();
     private Set<Material> illegalMaterials = new HashSet<>();
     private Map<Enchantment, Integer> enchantmentLimits = new HashMap<>();
-    private int explosionBlocksPerTick = 20; // Default value
+    private int explosionBlocksPerTick = 20; 
 
     public ConfigManager(JavaPlugin plugin) {
         this.plugin = plugin;
@@ -50,7 +50,7 @@ public class ConfigManager {
         }
 
         try {
-            this.config = YamlConfiguration.loadConfiguration(configFile); // Assign to class member
+            this.config = YamlConfiguration.loadConfiguration(configFile); 
             List<String> commands = config.getStringList("allowedCommands");
             if (commands != null) {
                 allowedCommands = new ArrayList<>(commands);
