@@ -1,6 +1,10 @@
 package me.playstation451.twop2tcore;
 
 import me.playstation451.twop2tcore.explosion.OptimizedExplosionListener;
+import me.playstation451.twop2tcore.physics.FallingBlockOptimizerListener;
+import me.playstation451.twop2tcore.physics.FluidFlowOptimizerListener;
+import me.playstation451.twop2tcore.physics.EntityDensityOptimizerListener;
+import me.playstation451.twop2tcore.redstone.RedstoneOptimizerListener;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitTask;
@@ -24,6 +28,11 @@ public final class Core2p2t extends JavaPlugin {
 
         getServer().getPluginManager().registerEvents(eventManager, this);
         getServer().getPluginManager().registerEvents(new OptimizedExplosionListener(this, configManager), this);
+        getServer().getPluginManager().registerEvents(new RedstoneOptimizerListener(this, configManager), this);
+        getServer().getPluginManager().registerEvents(new FallingBlockOptimizerListener(this, configManager), this);
+        getServer().getPluginManager().registerEvents(new FluidFlowOptimizerListener(this, configManager), this);
+        
+        new EntityDensityOptimizerListener(this, configManager);
 
         
         Bukkit.getScheduler().runTaskTimer(this, playerUtilities::checkAndDeopPlayers, 0L, 6000L);

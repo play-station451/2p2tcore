@@ -24,7 +24,24 @@ public class ConfigManager {
     private List<String> leaveMessages = new ArrayList<>();
     private Set<Material> illegalMaterials = new HashSet<>();
     private Map<Enchantment, Integer> enchantmentLimits = new HashMap<>();
-    private int explosionBlocksPerTick = 20; 
+    private int explosionBlocksPerTick = 20;
+    private boolean redstoneEnabled = true;
+    private int redstoneMaxUpdatesPerTickPerChunk = 100;
+    private int redstoneCheckRadius = 2;
+
+    private boolean fallingBlocksEnabled = true;
+    private int fallingBlocksMaxPerChunk = 50;
+    private int fallingBlocksDespawnDelaySeconds = 60;
+
+    private boolean fluidFlowEnabled = true;
+    private int fluidFlowMaxUpdatesPerTickPerChunk = 50;
+    private boolean disableWaterFlow = false;
+    private boolean disableLavaFlow = false;
+
+    private boolean entityDensityEnabled = true;
+    private int entityDensityMaxEntitiesPerChunk = 100;
+    private int entityDensityDespawnIntervalSeconds = 300; 
+    private List<String> entityDensityIgnoredEntityTypes = new ArrayList<>();
 
     public ConfigManager(JavaPlugin plugin) {
         this.plugin = plugin;
@@ -42,7 +59,7 @@ public class ConfigManager {
         if (!configFile.exists()) {
             plugin.getLogger().warning("config.yml not found, creating default.");
             try (FileWriter writer = new FileWriter(configFile)) {
-                String initialConfig = "allowedCommands:\n  - \"/say\"\n  - \"/w\"\n  - \"/msg\"\n  - \"/message\"\n  - \"/register\"\n  - \"/login\"\n  - \"/ignore\"\nAllowedOPs:\n  - \"YourUsernameHere\"\nJoinMSG:\n  - \"Welcome %player%!\"\n  - \"Glad to see you, %player%!\"\nLeaveMSG:\n  - \"Goodbye %player%!\"\n  - \"See you next time, %player%!\"\nIllegalMaterials:\n  - \"BEDROCK\"\n  - \"BARRIER\"\n  - \"COMMAND_BLOCK\"\n  - \"STRUCTURE_BLOCK\"\n  - \"JIGSAW\"\n  - \"LIGHT\"\n  - \"DEBUG_STICK\"\nEnchantmentLimits:\n  PROTECTION: 4\n  FIRE_PROTECTION: 4\n  FEATHER_FALLING: 4\n  BLAST_PROTECTION: 4\n  PROJECTILE_PROTECTION: 4\n  RESPIRATION: 3\n  AQUA_AFFINITY: 1\n  THORNS: 3\n  DEPTH_STRIDER: 3\n  FROST_WALKER: 2\n  BINDING_CURSE: 1\n  SHARPNESS: 5\n  SMITE: 5\n  BANE_OF_ARTHROPODS: 5\n  KNOCKBACK: 2\n  FIRE_ASPECT: 2\n  LOOTING: 3\n  SWEEPING_EDGE: 3\n  EFFICIENCY: 5\n  SILK_TOUCH: 1\n  UNBREAKING: 3\n  FORTUNE: 3\n  POWER: 5\n  PUNCH: 2\n  FLAME: 1\n  INFINITY: 1\n  LUCK_OF_THE_SEA: 3\n  LURE: 3\n  MENDING: 1\n  VANISHING_CURSE: 1\nExplosionBlocksPerTick: 20";
+                String initialConfig = "allowedCommands:\n  - \"/say\"\n  - \"/w\"\n  - \"/msg\"\n  - \"/message\"\n  - \"/register\"\n  - \"/login\"\n  - \"/ignore\"\nAllowedOPs:\n  - \"YourUsernameHere\"\nJoinMSG:\n  - \"Welcome %player%!\"\n  - \"Glad to see you, %player%!\"\nLeaveMSG:\n  - \"Goodbye %player%!\"\n  - \"See you next time, %player%!\"\nIllegalMaterials:\n  - \"BEDROCK\"\n  - \"BARRIER\"\n  - \"COMMAND_BLOCK\"\n  - \"STRUCTURE_BLOCK\"\n  - \"JIGSAW\"\n  - \"LIGHT\"\n  - \"DEBUG_STICK\"\nEnchantmentLimits:\n  PROTECTION: 4\n  FIRE_PROTECTION: 4\n  FEATHER_FALLING: 4\n  BLAST_PROTECTION: 4\n  PROJECTILE_PROTECTION: 4\n  RESPIRATION: 3\n  AQUA_AFFINITY: 1\n  THORNS: 3\n  DEPTH_STRIDER: 3\n  FROST_WALKER: 2\n  BINDING_CURSE: 1\n  SHARPNESS: 5\n  SMITE: 5\n  BANE_OF_ARTHROPODS: 5\n  KNOCKBACK: 2\n  FIRE_ASPECT: 2\n  LOOTING: 3\n  SWEEPING_EDGE: 3\n  EFFICIENCY: 5\n  SILK_TOUCH: 1\n  UNBREAKING: 3\n  FORTUNE: 3\n  POWER: 5\n  PUNCH: 2\n  FLAME: 1\n  INFINITY: 1\n  LUCK_OF_THE_SEA: 3\n  LURE: 3\n  MENDING: 1\n  VANISHING_CURSE: 1\nExplosionBlocksPerTick: 20\nRedstone:\n  Enabled: true\n  MaxUpdatesPerTickPerChunk: 100\n  CheckRadius: 2\nFallingBlocks:\n  Enabled: true\n  MaxPerChunk: 50\n  DespawnDelaySeconds: 60\nFluidFlow:\n  Enabled: true\n  MaxUpdatesPerTickPerChunk: 50\n  DisableWaterFlow: false\n  DisableLavaFlow: false\nEntityDensity:\n  Enabled: true\n  MaxEntitiesPerChunk: 100\n  DespawnIntervalSeconds: 300\n  IgnoredEntityTypes:\n    - \"PLAYER\"\n    - \"ARMOR_STAND\"\n    - \"ITEM_FRAME\"\n    - \"LEASH_HITCH\"\n    - \"PAINTING\"";
                 writer.write(initialConfig);
             } catch (IOException e) {
                 plugin.getLogger().severe("Error creating config.yml: " + e.getMessage());
@@ -199,6 +216,27 @@ public class ConfigManager {
             enchantmentLimits.put(Enchantment.VANISHING_CURSE, 1);
         }
         explosionBlocksPerTick = config.getInt("ExplosionBlocksPerTick", 20);
+
+        redstoneEnabled = config.getBoolean("Redstone.Enabled", true);
+        redstoneMaxUpdatesPerTickPerChunk = config.getInt("Redstone.MaxUpdatesPerTickPerChunk", 100);
+        redstoneCheckRadius = config.getInt("Redstone.CheckRadius", 2);
+
+        fallingBlocksEnabled = config.getBoolean("FallingBlocks.Enabled", true);
+        fallingBlocksMaxPerChunk = config.getInt("FallingBlocks.MaxPerChunk", 50);
+        fallingBlocksDespawnDelaySeconds = config.getInt("FallingBlocks.DespawnDelaySeconds", 60);
+
+        fluidFlowEnabled = config.getBoolean("FluidFlow.Enabled", true);
+        fluidFlowMaxUpdatesPerTickPerChunk = config.getInt("FluidFlow.MaxUpdatesPerTickPerChunk", 50);
+        disableWaterFlow = config.getBoolean("FluidFlow.DisableWaterFlow", false);
+        disableLavaFlow = config.getBoolean("FluidFlow.DisableLavaFlow", false);
+
+        entityDensityEnabled = config.getBoolean("EntityDensity.Enabled", true);
+        entityDensityMaxEntitiesPerChunk = config.getInt("EntityDensity.MaxEntitiesPerChunk", 100);
+        entityDensityDespawnIntervalSeconds = config.getInt("EntityDensity.DespawnIntervalSeconds", 300);
+        entityDensityIgnoredEntityTypes = config.getStringList("EntityDensity.IgnoredEntityTypes");
+        if (entityDensityIgnoredEntityTypes == null) {
+            entityDensityIgnoredEntityTypes = new ArrayList<>();
+        }
     }
 
     public List<String> getAllowedCommands() {
@@ -227,5 +265,61 @@ public class ConfigManager {
 
     public int getExplosionBlocksPerTick() {
         return explosionBlocksPerTick;
+    }
+
+    public boolean isRedstoneEnabled() {
+        return redstoneEnabled;
+    }
+
+    public int getRedstoneMaxUpdatesPerTickPerChunk() {
+        return redstoneMaxUpdatesPerTickPerChunk;
+    }
+
+    public int getRedstoneCheckRadius() {
+        return redstoneCheckRadius;
+    }
+
+    public boolean isFallingBlocksEnabled() {
+        return fallingBlocksEnabled;
+    }
+
+    public int getFallingBlocksMaxPerChunk() {
+        return fallingBlocksMaxPerChunk;
+    }
+
+    public int getFallingBlocksDespawnDelaySeconds() {
+        return fallingBlocksDespawnDelaySeconds;
+    }
+
+    public boolean isFluidFlowEnabled() {
+        return fluidFlowEnabled;
+    }
+
+    public int getFluidFlowMaxUpdatesPerTickPerChunk() {
+        return fluidFlowMaxUpdatesPerTickPerChunk;
+    }
+
+    public boolean isDisableWaterFlow() {
+        return disableWaterFlow;
+    }
+
+    public boolean isDisableLavaFlow() {
+        return disableLavaFlow;
+    }
+
+    public boolean isEntityDensityEnabled() {
+        return entityDensityEnabled;
+    }
+
+    public int getEntityDensityMaxEntitiesPerChunk() {
+        return entityDensityMaxEntitiesPerChunk;
+    }
+
+    public int getEntityDensityDespawnIntervalSeconds() {
+        return entityDensityDespawnIntervalSeconds;
+    }
+
+    public List<String> getEntityDensityIgnoredEntityTypes() {
+        return Collections.unmodifiableList(entityDensityIgnoredEntityTypes);
     }
 }
