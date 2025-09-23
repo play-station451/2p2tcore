@@ -1,0 +1,75 @@
+AllowedCommands:
+  - command1
+  - command2
+
+AllowedOPs:
+  - op1
+  - op2
+
+JoinMSG:
+  - "Welcome to the server!"
+
+LeaveMSG:
+  - "Goodbye!"
+
+IllegalMaterials:
+  - DIAMOND
+  - EMERALD
+
+EnchantmentLimits:
+  PROTECTION: 4
+  FIRE_PROTECTION: 4
+  FEATHER_FALLING: 4
+  BLAST_PROTECTION: 4
+  PROJECTILE_PROTECTION: 4
+  RESPIRATION: 3
+  AQUA_AFFINITY: 1
+  THORNS: 3
+  DEPTH_STRIDER: 3
+  FROST_WALKER: 2
+  BINDING_CURSE: 1
+  SHARPNESS: 5
+  SMITE: 5
+  BANE_OF_ARTHROPODS: 5
+  KNOCKBACK: 2
+  FIRE_ASPECT: 2
+  LOOTING: 3
+  SWEEPING_EDGE: 3
+  EFFICIENCY: 5
+  SILK_TOUCH: 1
+  UNBREAKING: 3
+  FORTUNE: 3
+  POWER: 5
+  PUNCH: 2
+  FLAME: 1
+  INFINITY: 1
+  LUCK_OF_THE_SEA: 3
+  LURE: 3
+  MENDING: 1
+  VANISHING_CURSE: 1
+
+ExplosionBlocksPerTick: 20
+
+Redstone:
+  Enabled: true
+  MaxUpdatesPerTickPerChunk: 100
+  CheckRadius: 2
+
+FallingBlocks:
+  Enabled: true
+  MaxPerChunk: 50
+  DespawnDelaySeconds: 60
+
+FluidFlow:
+  Enabled: true
+  MaxUpdatesPerTickPerChunk: 50
+  DisableWaterFlow: false
+  DisableLavaFlow: false
+
+EntityDensity:
+  Enabled: true
+  MaxEntitiesPerChunk: 100
+  DespawnIntervalSeconds: 300
+  IgnoredEntityTypes: []
+
+MaxChunksPerPlayer: 10

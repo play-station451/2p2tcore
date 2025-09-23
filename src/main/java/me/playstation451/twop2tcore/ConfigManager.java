@@ -14,6 +14,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class ConfigManager {
+    private int maxChunksPerPlayer = 10; 
 
     private final JavaPlugin plugin;
     private FileConfiguration config; 
@@ -216,6 +217,7 @@ public class ConfigManager {
             enchantmentLimits.put(Enchantment.VANISHING_CURSE, 1);
         }
         explosionBlocksPerTick = config.getInt("ExplosionBlocksPerTick", 20);
+        maxChunksPerPlayer = config.getInt("MaxChunksPerPlayer", 10);
 
         redstoneEnabled = config.getBoolean("Redstone.Enabled", true);
         redstoneMaxUpdatesPerTickPerChunk = config.getInt("Redstone.MaxUpdatesPerTickPerChunk", 100);
@@ -321,5 +323,9 @@ public class ConfigManager {
 
     public List<String> getEntityDensityIgnoredEntityTypes() {
         return Collections.unmodifiableList(entityDensityIgnoredEntityTypes);
+    }
+    
+    public int getMaxChunksPerPlayer() {
+        return maxChunksPerPlayer;
     }
 }

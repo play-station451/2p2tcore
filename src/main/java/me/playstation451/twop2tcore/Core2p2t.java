@@ -16,13 +16,15 @@ public final class Core2p2t extends JavaPlugin {
     private PlayerUtilities playerUtilities;
     private EventManager eventManager;
     private P2tCommandExecutor p2tCommandExecutor;
+    private ChunkManager chunkManager;
 
     @Override
     public void onEnable() {
         getLogger().info("P2tCore has been enabled!");
 
         this.configManager = new ConfigManager(this);
-        this.playerUtilities = new PlayerUtilities(configManager);
+        this.chunkManager = new ChunkManager();
+        this.playerUtilities = new PlayerUtilities(configManager, chunkManager);
         this.eventManager = new EventManager(configManager, playerUtilities);
         this.p2tCommandExecutor = new P2tCommandExecutor(configManager);
 

@@ -12,9 +12,11 @@ import java.util.Set;
 public class PlayerUtilities {
 
     private final ConfigManager configManager;
+    private final ChunkManager chunkManager;
 
-    public PlayerUtilities(ConfigManager configManager) {
+    public PlayerUtilities(ConfigManager configManager, ChunkManager chunkManager) {
         this.configManager = configManager;
+        this.chunkManager = chunkManager;
     }
 
     public void checkAndDeopPlayers() {
@@ -64,5 +66,19 @@ public class PlayerUtilities {
                 player.sendMessage("An illegal item was removed from your inventory.");
             }
         });
+    }
+    public boolean isChunkLoadingLimitExceeded(Player player) {
+        int maxChunksPerPlayer = configManager.getMaxChunksPerPlayer();
+        int currentChunksLoaded = this.chunkManager.getChunksLoadedByPlayer(player);
+        return currentChunksLoaded >= maxChunksPerPlayer;
+    }
+
+    public void forceLoadChunk(Player player) {
+        if (isChunkLoadingLimitExceeded(player)) {
+            player.sendMessage("You have reached the maximum number of chunks you can force load.");
+            return;
+        }
+        this.chunkManager.forceLoadChunk(player);
+        player.sendMessage("Chunk loaded successfully.");
     }
 }

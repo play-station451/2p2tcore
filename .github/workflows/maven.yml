@@ -28,4 +28,8 @@ jobs:
         prerelease: false
         title: "Latest Build (1.21.6)"
         files: |
+<<<<<<< HEAD
           ./target/*.jar
+=======
+          ./target/*.jar
+>>>>>>> 6fe1fef (chunk loading)
