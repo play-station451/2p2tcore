@@ -1,4 +1,4 @@
-package me.playstation451.core2p2t;
+package me.playstation451.twop2tcore;
 
 import org.bukkit.Bukkit;
 import org.bukkit.enchantments.Enchantment;

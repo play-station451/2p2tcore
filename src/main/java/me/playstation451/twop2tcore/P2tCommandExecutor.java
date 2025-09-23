@@ -1,4 +1,4 @@
-package me.playstation451.core2p2t;
+package me.playstation451.twop2tcore;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;

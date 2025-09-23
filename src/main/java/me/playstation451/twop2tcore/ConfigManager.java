@@ -1,4 +1,4 @@
-package me.playstation451.core2p2t;
+package me.playstation451.twop2tcore;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 public class ConfigManager {
 
     private final JavaPlugin plugin;
+    private FileConfiguration config; // Make config a class member
 
     private List<String> allowedCommands = new ArrayList<>();
     private List<String> allowedOPs = new ArrayList<>();
@@ -23,6 +24,7 @@ public class ConfigManager {
     private List<String> leaveMessages = new ArrayList<>();
     private Set<Material> illegalMaterials = new HashSet<>();
     private Map<Enchantment, Integer> enchantmentLimits = new HashMap<>();
+    private int explosionBlocksPerTick = 20; // Default value
 
     public ConfigManager(JavaPlugin plugin) {
         this.plugin = plugin;
@@ -40,7 +42,7 @@ public class ConfigManager {
         if (!configFile.exists()) {
             plugin.getLogger().warning("config.yml not found, creating default.");
             try (FileWriter writer = new FileWriter(configFile)) {
-                String initialConfig = "allowedCommands:\n  - \"/say\"\n  - \"/w\"\n  - \"/msg\"\n  - \"/message\"\n  - \"/register\"\n  - \"/login\"\n  - \"/ignore\"\nAllowedOPs:\n  - \"YourUsernameHere\"\nJoinMSG:\n  - \"Welcome %player%!\"\n  - \"Glad to see you, %player%!\"\nLeaveMSG:\n  - \"Goodbye %player%!\"\n  - \"See you next time, %player%!\"\nIllegalMaterials:\n  - \"BEDROCK\"\n  - \"BARRIER\"\n  - \"COMMAND_BLOCK\"\n  - \"STRUCTURE_BLOCK\"\n  - \"JIGSAW\"\n  - \"LIGHT\"\n  - \"DEBUG_STICK\"\nEnchantmentLimits:\n  PROTECTION: 4\n  FIRE_PROTECTION: 4\n  FEATHER_FALLING: 4\n  BLAST_PROTECTION: 4\n  PROJECTILE_PROTECTION: 4\n  RESPIRATION: 3\n  AQUA_AFFINITY: 1\n  THORNS: 3\n  DEPTH_STRIDER: 3\n  FROST_WALKER: 2\n  BINDING_CURSE: 1\n  SHARPNESS: 5\n  SMITE: 5\n  BANE_OF_ARTHROPODS: 5\n  KNOCKBACK: 2\n  FIRE_ASPECT: 2\n  LOOTING: 3\n  SWEEPING_EDGE: 3\n  EFFICIENCY: 5\n  SILK_TOUCH: 1\n  UNBREAKING: 3\n  FORTUNE: 3\n  POWER: 5\n  PUNCH: 2\n  FLAME: 1\n  INFINITY: 1\n  LUCK_OF_THE_SEA: 3\n  LURE: 3\n  MENDING: 1\n  VANISHING_CURSE: 1";
+                String initialConfig = "allowedCommands:\n  - \"/say\"\n  - \"/w\"\n  - \"/msg\"\n  - \"/message\"\n  - \"/register\"\n  - \"/login\"\n  - \"/ignore\"\nAllowedOPs:\n  - \"YourUsernameHere\"\nJoinMSG:\n  - \"Welcome %player%!\"\n  - \"Glad to see you, %player%!\"\nLeaveMSG:\n  - \"Goodbye %player%!\"\n  - \"See you next time, %player%!\"\nIllegalMaterials:\n  - \"BEDROCK\"\n  - \"BARRIER\"\n  - \"COMMAND_BLOCK\"\n  - \"STRUCTURE_BLOCK\"\n  - \"JIGSAW\"\n  - \"LIGHT\"\n  - \"DEBUG_STICK\"\nEnchantmentLimits:\n  PROTECTION: 4\n  FIRE_PROTECTION: 4\n  FEATHER_FALLING: 4\n  BLAST_PROTECTION: 4\n  PROJECTILE_PROTECTION: 4\n  RESPIRATION: 3\n  AQUA_AFFINITY: 1\n  THORNS: 3\n  DEPTH_STRIDER: 3\n  FROST_WALKER: 2\n  BINDING_CURSE: 1\n  SHARPNESS: 5\n  SMITE: 5\n  BANE_OF_ARTHROPODS: 5\n  KNOCKBACK: 2\n  FIRE_ASPECT: 2\n  LOOTING: 3\n  SWEEPING_EDGE: 3\n  EFFICIENCY: 5\n  SILK_TOUCH: 1\n  UNBREAKING: 3\n  FORTUNE: 3\n  POWER: 5\n  PUNCH: 2\n  FLAME: 1\n  INFINITY: 1\n  LUCK_OF_THE_SEA: 3\n  LURE: 3\n  MENDING: 1\n  VANISHING_CURSE: 1\nExplosionBlocksPerTick: 20";
                 writer.write(initialConfig);
             } catch (IOException e) {
                 plugin.getLogger().severe("Error creating config.yml: " + e.getMessage());
@@ -48,7 +50,7 @@ public class ConfigManager {
         }
 
         try {
-            FileConfiguration config = YamlConfiguration.loadConfiguration(configFile);
+            this.config = YamlConfiguration.loadConfiguration(configFile); // Assign to class member
             List<String> commands = config.getStringList("allowedCommands");
             if (commands != null) {
                 allowedCommands = new ArrayList<>(commands);
@@ -196,6 +198,7 @@ public class ConfigManager {
             enchantmentLimits.put(Enchantment.MENDING, 1);
             enchantmentLimits.put(Enchantment.VANISHING_CURSE, 1);
         }
+        explosionBlocksPerTick = config.getInt("ExplosionBlocksPerTick", 20);
     }
 
     public List<String> getAllowedCommands() {
@@ -220,5 +223,9 @@ public class ConfigManager {
 
     public Map<Enchantment, Integer> getEnchantmentLimits() {
         return Collections.unmodifiableMap(enchantmentLimits);
+    }
+
+    public int getExplosionBlocksPerTick() {
+        return explosionBlocksPerTick;
     }
 }

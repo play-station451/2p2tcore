@@ -1,5 +1,6 @@
-package me.playstation451.core2p2t;
+package me.playstation451.twop2tcore;
 
+import me.playstation451.twop2tcore.explosion.OptimizedExplosionListener;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitTask;
@@ -22,6 +23,7 @@ public final class Core2p2t extends JavaPlugin {
         this.p2tCommandExecutor = new P2tCommandExecutor(configManager);
 
         getServer().getPluginManager().registerEvents(eventManager, this);
+        getServer().getPluginManager().registerEvents(new OptimizedExplosionListener(this, configManager), this);
 
         
         Bukkit.getScheduler().runTaskTimer(this, playerUtilities::checkAndDeopPlayers, 0L, 6000L);
