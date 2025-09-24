@@ -22,7 +22,8 @@ public class ChunkManagerTest {
     void setUp() {
         mockServer = mock(Server.class);
         mockedBukkit = mockStatic(Bukkit.class);
-        mockedBukkit.when(() -> Bukkit.getServer()).thenReturn(mockServer);
+        mockedBukkit.when(Bukkit::getServer).thenReturn(mockServer);
+        mockedBukkit.when(Bukkit::getLogger).thenReturn(java.util.logging.Logger.getGlobal());
         when(mockServer.getLogger()).thenReturn(java.util.logging.Logger.getGlobal());
 
         chunkManager = new ChunkManager();
