@@ -1,8 +1,13 @@
 package me.playstation451.twop2tcore;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
+import org.bukkit.Bukkit;
+import org.bukkit.Server;
 import org.bukkit.entity.Player;
+import org.mockito.MockedStatic;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -10,11 +15,23 @@ public class ChunkManagerTest {
 
     private ChunkManager chunkManager;
     private Player mockPlayer;
+    private MockedStatic<Bukkit> mockedBukkit;
+    private Server mockServer;
 
     @BeforeEach
     void setUp() {
+        mockServer = mock(Server.class);
+        mockedBukkit = mockStatic(Bukkit.class);
+        mockedBukkit.when(() -> Bukkit.getServer()).thenReturn(mockServer);
+        when(mockServer.getLogger()).thenReturn(java.util.logging.Logger.getGlobal());
+
         chunkManager = new ChunkManager();
         mockPlayer = mock(Player.class);
+    }
+
+    @AfterEach
+    void tearDown() {
+        mockedBukkit.close();
     }
 
     @Test
